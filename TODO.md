@@ -55,7 +55,7 @@ Progression des Straw Hats entre les arcs.
 ## PRIORITÉ MOYENNE
 
 ### Gameplay
-- [ ] **Système de sauvegarde** — `ConfigFile` Godot pour persister progression entre sessions
+- [x] **Système de sauvegarde** — `SaveManager` + `GameManager` autoloads, JSON persistant
 - [ ] **Écran entre les batailles** — Sélection arbre de compétences + dialogue de transition narrative
 - [ ] **Dialogue narratif** — Améliorer le système de dialogue pré/post bataille (portraits, boîte stylisée)
 - [ ] **Caméra** — Zoom sur les unités qui agissent, suivi du combat
