@@ -365,6 +365,8 @@ func _check_battle_end() -> bool:
 
 	if not enemies_alive:
 		_change_state(State.VICTORY)
+		_award_exp()
+		SaveManager.mark_battle_complete(config.battle_id)
 		_run_dialogue(config.post_battle_dialogue, func() -> void:
 			battle_ended.emit(true)
 			ui.show_battle_result(true)
@@ -372,6 +374,21 @@ func _check_battle_end() -> bool:
 		return true
 
 	return false
+
+func _award_exp() -> void:
+	var total_exp := 0
+	for u in all_units:
+		if not u.is_player:
+			total_exp += u.data.exp_reward
+	if total_exp <= 0:
+		return
+	var survivors: Array[String] = []
+	for u in all_units:
+		if u.is_player and u.is_alive() and u.data.id in SaveManager.STRAW_HAT_IDS:
+			survivors.append(u.data.id)
+	if survivors.is_empty():
+		return
+	SaveManager.award_exp(survivors, total_exp)
 
 func _on_unit_died(unit: Unit) -> void:
 	turn_manager.unregister(unit)

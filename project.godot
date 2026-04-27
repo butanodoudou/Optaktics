@@ -1,0 +1,30 @@
+; Engine configuration file.
+; Generated for Optaktics — One Piece Tactical RPG
+; Godot 4 — GL Compatibility
+
+config_version=5
+
+[application]
+
+config/name="Optaktics"
+config/description="One Piece Tactical RPG — East Blue Saga"
+run/main_scene="res://scenes/battle/battle_scene.tscn"
+config/features=PackedStringArray("4.2", "GL Compatibility")
+
+[autoload]
+
+SaveManager="*res://scripts/progression/save_manager.gd"
+GameManager="*res://scripts/progression/game_manager.gd"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/size/resizable=false
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
