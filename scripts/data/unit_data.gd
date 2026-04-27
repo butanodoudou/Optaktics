@@ -1,7 +1,7 @@
 class_name UnitData
 extends Resource
 
-enum Faction  { STRAW_HATS, MARINES, PIRATES, BANDITS, CIVILIANS }
+enum Faction  { STRAW_HATS, RED_HAIR_PIRATES, MARINES, PIRATES, BANDITS, CIVILIANS }
 enum Category { PROTAGONIST, DEVIL_FRUIT_USER, ARCHETYPE }
 
 @export var id: String = ""

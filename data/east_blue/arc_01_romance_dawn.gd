@@ -1,40 +1,55 @@
 class_name Arc01RomanceDawn
 
-# ── Bataille 1 : Village de Fushia ─ Tutoriel ─────────────────────────────────
-# Luffy seul (Niv.3) vs bandits de Higuma
-# Composition : 3 DPS + 1 boss — FACILE
+# ── Bataille 1 : La Taverne de Fushia ─ Tutoriel ──────────────────────────────
+# Pirates aux Cheveux Rouges (Shanks, Beckmann, Lucky Roo, Yassop) vs bandits Higuma
+# Tutoriel : 4 unités aux styles variés pour apprendre les mécaniques
+# Composition ennemis : 3 DPS + 2 Tank + Higuma — MOYEN
 static func battle_01_tutorial() -> BattleConfig:
 	var c := BattleConfig.new()
 	c.battle_id   = "eb_01_01"
-	c.battle_name = "Village de Fushia"
+	c.battle_name = "La Taverne de Fushia"
 	c.arc_name    = "Romance Dawn"
-	c.grid_width  = 12
-	c.grid_height = 8
-	c.background_color = Color(0.12, 0.28, 0.12)
+	c.grid_width  = 14
+	c.grid_height = 9
+	c.background_color = Color(0.25, 0.18, 0.10)
 
-	for x in range(3, 9):
-		c.set_tile(x, 2, BattleConfig.TileType.WOOD)
-	c.set_tile(0,  0, BattleConfig.TileType.BLOCKED)
-	c.set_tile(11, 0, BattleConfig.TileType.BLOCKED)
+	# Comptoir au fond, tables sur les flancs
+	for x in range(4, 10):
+		c.set_tile(x, 1, BattleConfig.TileType.WOOD)
+	for x in [2, 3, 10, 11]:
+		c.set_tile(x, 4, BattleConfig.TileType.WOOD)
+	for y in range(0, 9):
+		c.set_tile(13, y, BattleConfig.TileType.BLOCKED)
 
 	c.pre_battle_dialogue = [
-		"Shanks : « Hey Luffy, t'es sûr de toi ? »",
-		"Luffy : « Vous insultez Shanks ! Je ne vous laisserai pas faire ! »",
-		"Higuma : « Tuez ce gamin ! »",
+		"Higuma : « Vous appelez ça du service ?! Ce saké est de la pisse ! »",
+		"Shanks : « Hmm… Dommage pour ce saké. »",
+		"Higuma : « Ce pirate de pacotille me fait la morale ?! TUEZ-LES ! »",
+		"Lucky Roo : *continue de manger tranquillement*",
+		"Beckmann : *allume sa pipe* « Dernière chance de partir. »",
+		"Yassop : « Ha ! Ça va être marrant… »",
 	]
 	c.post_battle_dialogue = [
-		"Luffy : « C'est ce que vous méritez pour vous en prendre à Shanks ! »",
-		"Shanks : « Ha ! Ce gamin a du caractère ! »",
+		"Higuma : « Im… possible… des pirates ordinaires… »",
+		"Shanks : « Soyez plus prudents la prochaine fois. »",
+		"Lucky Roo : *reprend une cuisse de poulet*",
+		"Luffy : « WAAAH C'ÉTAIT TROP FORT ! »",
+		"Shanks : *rit* « Ce gamin a de l'œil. »",
 	]
 
-	# Joueurs
-	c.add_unit(EastBlueCharacters.luffy(), Vector2i(2, 4), true, 3)
+	# Pirates aux Cheveux Rouges
+	c.add_unit(EastBlueCharacters.shanks(),    Vector2i(2, 4), true,  8)
+	c.add_unit(EastBlueCharacters.beckmann(),  Vector2i(2, 2), true,  8)
+	c.add_unit(EastBlueCharacters.lucky_roo(), Vector2i(2, 6), true,  8)
+	c.add_unit(EastBlueCharacters.yassop(),    Vector2i(1, 4), true,  8)
 
-	# Ennemis : 2 DPS Tranchant + 1 Tank + Higuma (boss)
-	c.add_unit(ArchetypeData.dps_melee_slash(UnitData.Faction.BANDITS), Vector2i(7, 2), false, 2)
-	c.add_unit(ArchetypeData.dps_melee_slash(UnitData.Faction.BANDITS), Vector2i(8, 4), false, 2)
-	c.add_unit(ArchetypeData.tank(UnitData.Faction.BANDITS),            Vector2i(7, 5), false, 2)
-	c.add_unit(EastBlueCharacters.higuma(),                             Vector2i(9, 3), false, 5)
+	# Bandits de Higuma
+	c.add_unit(EastBlueCharacters.higuma(),                              Vector2i(10, 4), false, 7)
+	c.add_unit(ArchetypeData.dps_melee_slash(UnitData.Faction.BANDITS),  Vector2i(8,  2), false, 6)
+	c.add_unit(ArchetypeData.dps_melee_slash(UnitData.Faction.BANDITS),  Vector2i(9,  6), false, 6)
+	c.add_unit(ArchetypeData.dps_melee_blunt(UnitData.Faction.BANDITS),  Vector2i(7,  4), false, 6)
+	c.add_unit(ArchetypeData.tank(UnitData.Faction.BANDITS),             Vector2i(8,  5), false, 6)
+	c.add_unit(ArchetypeData.tank(UnitData.Faction.BANDITS),             Vector2i(11, 3), false, 6)
 	return c
 
 

@@ -522,3 +522,244 @@ static func grunt_blunt() -> AbilityData:
 		AbilityData.TargetType.SINGLE_ENEMY,
 		AbilityData.DamageType.PHYSICAL, AbilityData.DamageTag.BLUNT, 1.0
 	)
+
+# ═══════════════════════════════════════════════════
+#  SHANKS  (Capitaine des Pirates aux Cheveux Rouges)
+# ═══════════════════════════════════════════════════
+
+static func shanks_basic() -> AbilityData:
+	return AbilityData.make(
+		"basic", "Taille",
+		"Coup de sabre rapide et précis.",
+		0, 1, 0,
+		AbilityData.TargetType.SINGLE_ENEMY,
+		AbilityData.DamageType.PHYSICAL, AbilityData.DamageTag.SLASH, 1.2
+	)
+
+static func shanks_sovereign_slash() -> AbilityData:
+	var a := AbilityData.make(
+		"sovereign_slash", "Taille Souveraine",
+		"Frappe dévastratrice qui repousse l'ennemi.",
+		3, 1, 0,
+		AbilityData.TargetType.SINGLE_ENEMY,
+		AbilityData.DamageType.PHYSICAL, AbilityData.DamageTag.SLASH, 2.4
+	)
+	a.knockback = 2
+	return a
+
+# Haki du Conquérant : terrasse tous les ennemis proches
+static func shanks_conqueror_haki() -> AbilityData:
+	var a := AbilityData.make(
+		"conqueror_haki", "Haki du Conquérant",
+		"Pression de la volonté — étourdit les ennemis dans un rayon de 2 cases.",
+		4, 1, 2,
+		AbilityData.TargetType.AOE_ENEMIES,
+		AbilityData.DamageType.STATUS_ONLY, AbilityData.DamageTag.NONE, 0.0
+	)
+	a.apply_status  = 1  # STUN
+	a.status_chance = 0.50
+	a.status_duration = 1
+	return a
+
+# Frappe de la Mer Rouge : coup chargé, perce les défenses
+static func shanks_red_sea_strike() -> AbilityData:
+	var a := AbilityData.make(
+		"red_sea_strike", "Frappe de la Mer Rouge",
+		"Coup concentré qui transperce toute défense.",
+		5, 2, 0,
+		AbilityData.TargetType.SINGLE_ENEMY,
+		AbilityData.DamageType.PHYSICAL, AbilityData.DamageTag.SLASH, 3.0
+	)
+	a.ignores_half_mitigation = true
+	return a
+
+# Regard Royal : réaction — quand Shanks est frappé, chance d'étourdir l'attaquant
+static func shanks_royal_gaze_reaction() -> AbilityData:
+	var a := AbilityData.make(
+		"royal_gaze", "Regard Royal",
+		"Le regard du Conquérant — paralyse l'attaquant au contact.",
+		0, 1, 0,
+		AbilityData.TargetType.SINGLE_ENEMY,
+		AbilityData.DamageType.STATUS_ONLY, AbilityData.DamageTag.NONE, 0.0
+	)
+	a.is_reaction       = true
+	a.reaction_trigger  = AbilityData.ReactionTrigger.ON_HIT_MELEE
+	a.apply_status      = 1  # STUN
+	a.status_chance     = 0.65
+	a.status_duration   = 1
+	return a
+
+# ═══════════════════════════════════════════════════
+#  BECKMANN  (Premier Officier)
+# ═══════════════════════════════════════════════════
+
+static func beckmann_basic() -> AbilityData:
+	return AbilityData.make(
+		"basic", "Tir Standard",
+		"Tir de pistolet précis à portée moyenne.",
+		0, 3, 0,
+		AbilityData.TargetType.SINGLE_ENEMY,
+		AbilityData.DamageType.TECHNICAL, AbilityData.DamageTag.PIERCE, 1.0
+	)
+
+static func beckmann_headshot() -> AbilityData:
+	var a := AbilityData.make(
+		"headshot", "Tir à la Tête",
+		"Tir ciblé qui étourdit la cible.",
+		3, 5, 0,
+		AbilityData.TargetType.SINGLE_ENEMY,
+		AbilityData.DamageType.TECHNICAL, AbilityData.DamageTag.PIERCE, 2.0
+	)
+	a.apply_status  = 1  # STUN
+	a.status_chance = 0.35
+	return a
+
+static func beckmann_covering_fire() -> AbilityData:
+	var a := AbilityData.make(
+		"covering_fire", "Feu de Couverture",
+		"Salve qui aveugle tous les ennemis dans une zone.",
+		4, 4, 1,
+		AbilityData.TargetType.AOE_ENEMIES,
+		AbilityData.DamageType.TECHNICAL, AbilityData.DamageTag.PIERCE, 1.1
+	)
+	a.apply_status  = 4  # BLIND
+	a.status_chance = 0.40
+	return a
+
+static func beckmann_deadeye() -> AbilityData:
+	var a := AbilityData.make(
+		"deadeye", "Œil du Maître",
+		"Tir parfait — ignore toute protection.",
+		5, 5, 0,
+		AbilityData.TargetType.SINGLE_ENEMY,
+		AbilityData.DamageType.TECHNICAL, AbilityData.DamageTag.PIERCE, 2.6
+	)
+	a.ignores_half_mitigation = true
+	return a
+
+# Réaction : contre-tir si un allié adjacent est frappé
+static func beckmann_counter_shot_reaction() -> AbilityData:
+	var a := AbilityData.make(
+		"counter_shot", "Riposte de l'Officier",
+		"Tire sur l'attaquant quand un allié est touché.",
+		0, 4, 0,
+		AbilityData.TargetType.SINGLE_ENEMY,
+		AbilityData.DamageType.TECHNICAL, AbilityData.DamageTag.PIERCE, 1.2
+	)
+	a.is_reaction      = true
+	a.reaction_trigger = AbilityData.ReactionTrigger.ON_ALLY_HIT
+	return a
+
+# ═══════════════════════════════════════════════════
+#  LUCKY ROO  (Homme toujours affamé, toujours dangereux)
+# ═══════════════════════════════════════════════════
+
+static func lucky_basic() -> AbilityData:
+	return AbilityData.make(
+		"basic", "Coup de Poing",
+		"Coup massif de la main droite.",
+		0, 1, 0,
+		AbilityData.TargetType.SINGLE_ENEMY,
+		AbilityData.DamageType.PHYSICAL, AbilityData.DamageTag.BLUNT, 1.1
+	)
+
+static func lucky_pistol_blast() -> AbilityData:
+	return AbilityData.make(
+		"pistol_blast", "Tir Rapproché",
+		"Sort son pistolet et tire à bout portant.",
+		2, 2, 0,
+		AbilityData.TargetType.SINGLE_ENEMY,
+		AbilityData.DamageType.PHYSICAL, AbilityData.DamageTag.BLUNT, 2.2
+	)
+
+static func lucky_body_slam() -> AbilityData:
+	var a := AbilityData.make(
+		"body_slam", "Écrasement",
+		"Se jette dans la mêlée et renverse tous les ennemis proches.",
+		3, 1, 1,
+		AbilityData.TargetType.AOE_ENEMIES,
+		AbilityData.DamageType.PHYSICAL, AbilityData.DamageTag.BLUNT, 1.6
+	)
+	a.apply_status  = 1  # STUN
+	a.status_chance = 0.25
+	return a
+
+# Lucky Roo mange pour récupérer des PV — toujours en train de manger
+static func lucky_feast() -> AbilityData:
+	var a := AbilityData.make(
+		"feast", "Festin !",
+		"S'arrête pour manger — récupère des PV.",
+		2, 1, 0,
+		AbilityData.TargetType.SELF,
+		AbilityData.DamageType.HEAL, AbilityData.DamageTag.NONE, 0.0
+	)
+	a.heal_vol_multiplier = 1.8
+	return a
+
+static func lucky_point_blank() -> AbilityData:
+	var a := AbilityData.make(
+		"point_blank", "Tir au Canon",
+		"Colle le canon de son arme sur l'ennemi. Dévastateur.",
+		5, 1, 0,
+		AbilityData.TargetType.SINGLE_ENEMY,
+		AbilityData.DamageType.PHYSICAL, AbilityData.DamageTag.BLUNT, 3.2
+	)
+	a.ignores_half_mitigation = true
+	return a
+
+# ═══════════════════════════════════════════════════
+#  YASSOP  (Meilleur tireur de l'Est Blue — père d'Usopp)
+# ═══════════════════════════════════════════════════
+
+static func yassop_basic() -> AbilityData:
+	return AbilityData.make(
+		"basic", "Tir de Précision",
+		"Tir à longue portée d'une précision chirurgicale.",
+		0, 5, 0,
+		AbilityData.TargetType.SINGLE_ENEMY,
+		AbilityData.DamageType.TECHNICAL, AbilityData.DamageTag.PIERCE, 1.0
+	)
+
+static func yassop_vital_shot() -> AbilityData:
+	var a := AbilityData.make(
+		"vital_shot", "Cible Vitale",
+		"Vise un point précis qui double la douleur.",
+		3, 5, 0,
+		AbilityData.TargetType.SINGLE_ENEMY,
+		AbilityData.DamageType.TECHNICAL, AbilityData.DamageTag.PIERCE, 2.2
+	)
+	a.ignores_half_mitigation = true
+	return a
+
+static func yassop_curved_shot() -> AbilityData:
+	var a := AbilityData.make(
+		"curved_shot", "Tir Dévié",
+		"Trajectoire courbe qui aveugle la cible.",
+		3, 5, 0,
+		AbilityData.TargetType.SINGLE_ENEMY,
+		AbilityData.DamageType.TECHNICAL, AbilityData.DamageTag.PIERCE, 1.6
+	)
+	a.apply_status  = 4  # BLIND
+	a.status_chance = 0.55
+	return a
+
+static func yassop_warning_shot() -> AbilityData:
+	var a := AbilityData.make(
+		"warning_shot", "Tir d'Avertissement",
+		"Salve rapide qui aveugle une zone entière.",
+		4, 4, 1,
+		AbilityData.TargetType.AOE_ENEMIES,
+		AbilityData.DamageType.TECHNICAL, AbilityData.DamageTag.PIERCE, 1.0
+	)
+	a.apply_status  = 4  # BLIND
+	a.status_chance = 0.60
+	return a
+
+static func yassop_thousand_shots() -> AbilityData:
+	return AbilityData.make(
+		"thousand_shots", "Mille Tirs",
+		"Barrage de balles qui couvre une zone entière.",
+		5, 4, 2,
+		AbilityData.TargetType.AOE_ENEMIES,
+		AbilityData.DamageType.TECHNICAL, AbilityData.DamageTag.PIERCE, 1.3
+	)

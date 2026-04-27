@@ -102,6 +102,105 @@ static func sanji() -> UnitData:
 #  ARC 1 — ROMANCE DAWN : Bandits de Higuma
 # ═══════════════════════════════════════════════════
 
+# ═══════════════════════════════════════════════════
+#  ARC 1 — ROMANCE DAWN : Pirates aux Cheveux Rouges
+# ═══════════════════════════════════════════════════
+
+# Shanks — Yonko en devenir, le seul homme qui a arrêté Mihawk d'un mot.
+# Stats volontairement élevées : c'est un tutoriel, les joueurs doivent se sentir puissants.
+static func shanks() -> UnitData:
+	var d := UnitData.make(
+		"shanks", "Shanks",
+		UnitData.Faction.RED_HAIR_PIRATES, UnitData.Category.PROTAGONIST, Color(0.8, 0.15, 0.15),
+		#  PV  FOR  TEC  DEF  RES  AGI  VOL  MOV
+		   70,  18,  10,  13,  12,  11,  16,   5,
+		# gPV gFOR gTEC gDEF gRES gAGI gVOL
+		   65,  75,  45,  55,  50,  60,  70,
+		0   # pas de récompense XP (allié temporaire)
+	)
+	d.basic_tag = AbilityData.DamageTag.SLASH
+	d.abilities = [
+		EastBlueAbilities.shanks_basic(),
+		EastBlueAbilities.shanks_sovereign_slash(),
+		EastBlueAbilities.shanks_conqueror_haki(),
+		EastBlueAbilities.shanks_red_sea_strike(),
+		EastBlueAbilities.shanks_royal_gaze_reaction(),
+	]
+	return d
+
+# Beckmann — Premier officier, meilleur tireur de l'Est Blue.
+# Polyvalent : mi-portée, mi-force brute. Haute AGI.
+static func beckmann() -> UnitData:
+	var d := UnitData.make(
+		"beckmann", "Beckmann",
+		UnitData.Faction.RED_HAIR_PIRATES, UnitData.Category.PROTAGONIST, Color(0.6, 0.55, 0.35),
+		#  PV  FOR  TEC  DEF  RES  AGI  VOL  MOV
+		   55,  13,  15,   9,  10,  13,  11,   4,
+		# gPV gFOR gTEC gDEF gRES gAGI gVOL
+		   50,  55,  65,  40,  45,  65,  50,
+		0
+	)
+	d.basic_tag  = AbilityData.DamageTag.PIERCE
+	d.basic_type = AbilityData.DamageType.TECHNICAL
+	d.basic_range = 3
+	d.abilities = [
+		EastBlueAbilities.beckmann_basic(),
+		EastBlueAbilities.beckmann_headshot(),
+		EastBlueAbilities.beckmann_covering_fire(),
+		EastBlueAbilities.beckmann_deadeye(),
+		EastBlueAbilities.beckmann_counter_shot_reaction(),
+	]
+	return d
+
+# Lucky Roo — Gros, toujours en train de manger, capable de tuer un bandit armé
+# sans même s'arrêter de mâcher. Tank offensif.
+static func lucky_roo() -> UnitData:
+	var d := UnitData.make(
+		"lucky_roo", "Lucky Roo",
+		UnitData.Faction.RED_HAIR_PIRATES, UnitData.Category.PROTAGONIST, Color(0.7, 0.45, 0.15),
+		#  PV  FOR  TEC  DEF  RES  AGI  VOL  MOV
+		   80,  16,   5,  14,   7,   5,   9,   3,
+		# gPV gFOR gTEC gDEF gRES gAGI gVOL
+		   80,  70,  20,  65,  30,  25,  40,
+		0
+	)
+	d.abilities = [
+		EastBlueAbilities.lucky_basic(),
+		EastBlueAbilities.lucky_pistol_blast(),
+		EastBlueAbilities.lucky_body_slam(),
+		EastBlueAbilities.lucky_feast(),
+		EastBlueAbilities.lucky_point_blank(),
+	]
+	return d
+
+# Yassop — Tireur d'élite, père d'Usopp. Peut toucher n'importe quoi sans viser.
+# Longue portée maximale, très fragile en mêlée.
+static func yassop() -> UnitData:
+	var d := UnitData.make(
+		"yassop", "Yassop",
+		UnitData.Faction.RED_HAIR_PIRATES, UnitData.Category.PROTAGONIST, Color(0.35, 0.6, 0.75),
+		#  PV  FOR  TEC  DEF  RES  AGI  VOL  MOV
+		   48,   8,  18,   6,   9,  12,  10,   4,
+		# gPV gFOR gTEC gDEF gRES gAGI gVOL
+		   40,  30,  80,  25,  40,  65,  45,
+		0
+	)
+	d.basic_tag  = AbilityData.DamageTag.PIERCE
+	d.basic_type = AbilityData.DamageType.TECHNICAL
+	d.basic_range = 5
+	d.abilities = [
+		EastBlueAbilities.yassop_basic(),
+		EastBlueAbilities.yassop_vital_shot(),
+		EastBlueAbilities.yassop_curved_shot(),
+		EastBlueAbilities.yassop_warning_shot(),
+		EastBlueAbilities.yassop_thousand_shots(),
+	]
+	return d
+
+# ═══════════════════════════════════════════════════
+#  ARC 1 — ROMANCE DAWN : Boss Higuma
+# ═══════════════════════════════════════════════════
+
 static func higuma() -> UnitData:
 	var d := UnitData.make(
 		"higuma", "Higuma",
