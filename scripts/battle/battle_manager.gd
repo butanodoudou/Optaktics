@@ -42,6 +42,8 @@ var target_range_tiles: Array[Vector2i] = []
 
 var turn_manager: TurnManager
 var ai: AIController
+var all_player_units: Array[Unit] = []   # all player units including dead (for XP scoring)
+var _defeated_enemy_exp: int = 0         # accumulated exp_reward from enemies that died
 
 # ── Boot ──────────────────────────────────────────────────────────────────────
 
@@ -80,6 +82,8 @@ func _spawn_units() -> void:
 		unit.unit_died.connect(_on_unit_died)
 		turn_manager.register(unit)
 		all_units.append(unit)
+		if placement.is_player:
+			all_player_units.append(unit)
 
 func _center_camera() -> void:
 	camera.position = Vector2(
@@ -359,15 +363,19 @@ func _resolve_hit(caster: Unit, ability: AbilityData, tgt: Unit) -> void:
 	if ability.damage_type == AbilityData.DamageType.HEAL:
 		var healed := tgt.receive_heal(amount)
 		damage_dealt.emit(tgt.grid_pos, healed, true)
+		caster.healing_done += healed
 	elif ability.damage_type == AbilityData.DamageType.STATUS_ONLY:
 		pass
 	else:
+		tgt._last_attacker = caster
 		var dmg := tgt.take_damage(amount)
 		damage_dealt.emit(tgt.grid_pos, dmg, false)
+		caster.damage_dealt += dmg
 
 	# Apply status effect
 	if ability.apply_status != StatusManager.Status.NONE and randf() < ability.status_chance:
 		tgt.apply_status(ability.apply_status as StatusManager.Status, ability.status_duration)
+		caster.statuses_applied += 1
 
 	# Knockback
 	if ability.knockback > 0:
@@ -434,21 +442,76 @@ func _check_battle_end() -> bool:
 	return false
 
 func _award_exp() -> void:
-	var total_exp := 0
-	for u in all_units:
-		if not u.is_player:
-			total_exp += u.data.exp_reward
-	if total_exp <= 0:
+	var base_xp := _defeated_enemy_exp
+	if base_xp <= 0:
 		return
-	var survivors: Array[String] = []
-	for u in all_units:
-		if u.is_player and u.is_alive() and u.data.id in SaveManager.STRAW_HAT_IDS:
-			survivors.append(u.data.id)
-	if survivors.is_empty():
+
+	# Collect all player units that participated (alive + dead)
+	var participants: Array[Unit] = []
+	for u in all_player_units:
+		if u.data.id in SaveManager.STRAW_HAT_IDS:
+			participants.append(u)
+	if participants.is_empty():
 		return
-	SaveManager.award_exp(survivors, total_exp)
+
+	# Compute combat scores
+	var scores: Array[float] = []
+	for u in participants:
+		var s := float(u.kills * 40 + u.damage_dealt * 0.4
+					 + u.damage_taken * 0.2 + u.healing_done * 0.4
+					 + u.statuses_applied * 20)
+		scores.append(maxf(s, 1.0))
+
+	var max_score := scores.max()
+
+	# Build XP amounts dict
+	var char_amounts := {}
+	for i in range(participants.size()):
+		var u    := participants[i]
+		var ratio:= scores[i] / max_score
+		var factor_contrib := lerpf(0.70, 1.30, ratio)
+		var factor_survival := 1.0 if u.is_alive() else 0.0
+		var xp := roundi(float(base_xp) * factor_contrib * factor_survival)
+		if xp > 0:
+			char_amounts[u.data.id] = xp
+
+	# Award XP and apply probabilistic growth for each level gained
+	var levels_gained := SaveManager.award_exp(char_amounts)
+	for u in participants:
+		var id       := u.data.id
+		var xp_amount: int = char_amounts.get(id, 0)
+		if xp_amount <= 0:
+			print("  %s: 0 XP (mort en combat)" % u.data.display_name)
+			continue
+		var gained: int = levels_gained.get(id, 0)
+		if gained > 0:
+			var growth_gains := SaveManager.apply_growth_rolls(id, u.data.get_growth_rates(), gained)
+			print("★ %s → Level %d (+%d niv.) — %s" % [
+				u.data.display_name,
+				SaveManager.get_character_level(id),
+				gained,
+				_format_gains(growth_gains)
+			])
+		print("  %s: +%d XP → %d / %d (L%d)" % [
+			u.data.display_name,
+			xp_amount,
+			SaveManager.get_character_exp(id),
+			ceili(80.0 * pow(SaveManager.get_character_level(id), 1.5)),
+			SaveManager.get_character_level(id)
+		])
+
+func _format_gains(gains: Dictionary) -> String:
+	var parts := []
+	for stat in gains:
+		if gains[stat] > 0:
+			parts.append("+%d %s" % [gains[stat], stat.to_upper()])
+	return ", ".join(parts) if not parts.is_empty() else "—"
 
 func _on_unit_died(unit: Unit) -> void:
+	if is_instance_valid(unit._last_attacker):
+		unit._last_attacker.kills += 1
+	if not unit.is_player:
+		_defeated_enemy_exp += unit.data.exp_reward
 	turn_manager.unregister(unit)
 	all_units.erase(unit)
 	_check_battle_end()

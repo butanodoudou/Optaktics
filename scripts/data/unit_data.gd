@@ -46,7 +46,7 @@ var damage_vulnerabilities: Dictionary = {}  # DamageTag -> float multiplier
 @export var water_regen_pv: int = 0              # Arlong: PV healed per turn on water tile
 @export var mille_mains_agi_mult: float = 1.0    # Kuro: AGI multiplier when mode active
 
-@export var exp_reward: int = 20
+@export var exp_reward: int = 160
 
 var abilities: Array[AbilityData] = []  # abilities[0] = basic attack (free)
 
@@ -66,6 +66,10 @@ func res_at(level: int) -> int: return stat_at_level(base_res, growth_res, level
 func agi_at(level: int) -> int: return stat_at_level(base_agi, growth_agi, level)
 func vol_at(level: int) -> int: return stat_at_level(base_vol, growth_vol, level)
 func nrj_max_at(level: int) -> int: return ceili(vol_at(level) / 2.0)
+
+func get_growth_rates() -> Dictionary:
+	return {"pv": growth_pv, "for": growth_for, "tec": growth_tec,
+			"def": growth_def, "res": growth_res, "agi": growth_agi, "vol": growth_vol}
 
 # ── Factory helper ─────────────────────────────────────────────────────────────
 static func make(

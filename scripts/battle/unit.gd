@@ -39,6 +39,15 @@ var experience: int  = 0
 # Status effects
 var statuses: Array = []   # Array[StatusManager.ActiveStatus]
 
+# ── Combat performance tracking (reset each battle) ───────────────────────────
+var kills:             int  = 0
+var damage_dealt:      int  = 0
+var damage_taken:      int  = 0
+var healing_done:      int  = 0
+var statuses_applied:  int  = 0
+var was_revived:       bool = false   # future: used when revival skill exists
+var _last_attacker:    Unit = null    # set in battle_manager before take_damage
+
 # Boss runtime flags
 var armor_broken: bool       = false   # Krieg
 var mille_mains_active: bool = false   # Kuro
@@ -63,6 +72,8 @@ func setup(p_data: UnitData, tile: Vector2i, p_level: int, p_is_player: bool) ->
 	level     = p_level
 	is_player = p_is_player
 	grid_pos  = tile
+	kills = 0; damage_dealt = 0; damage_taken = 0
+	healing_done = 0; statuses_applied = 0; was_revived = false; _last_attacker = null
 	_compute_stats()
 	current_pv  = max_pv
 	current_nrj = nrj_max
@@ -70,14 +81,26 @@ func setup(p_data: UnitData, tile: Vector2i, p_level: int, p_is_player: bool) ->
 	_build_visuals()
 
 func _compute_stats() -> void:
-	max_pv    = data.pv_at(level)
-	for_stat  = data.for_at(level)
-	tec_stat  = data.tec_at(level)
-	def_stat  = data.def_at(level)
-	res_stat  = data.res_at(level)
-	agi_stat  = data.agi_at(level)
-	vol_stat  = data.vol_at(level)
-	nrj_max   = data.nrj_max_at(level)
+	# Player Straw Hats use base + probabilistic save bonuses; enemies use formula.
+	if is_player and SaveManager.is_straw_hat(data.id):
+		var b := SaveManager.get_character_stat_bonuses(data.id)
+		max_pv   = data.base_pv  + b.get("pv",  0)
+		for_stat = data.base_for + b.get("for", 0)
+		tec_stat = data.base_tec + b.get("tec", 0)
+		def_stat = data.base_def + b.get("def", 0)
+		res_stat = data.base_res + b.get("res", 0)
+		agi_stat = data.base_agi + b.get("agi", 0)
+		vol_stat = data.base_vol + b.get("vol", 0)
+		nrj_max  = ceili(vol_stat / 2.0)
+	else:
+		max_pv    = data.pv_at(level)
+		for_stat  = data.for_at(level)
+		tec_stat  = data.tec_at(level)
+		def_stat  = data.def_at(level)
+		res_stat  = data.res_at(level)
+		agi_stat  = data.agi_at(level)
+		vol_stat  = data.vol_at(level)
+		nrj_max   = data.nrj_max_at(level)
 
 # ── Visual construction ───────────────────────────────────────────────────────
 
@@ -169,6 +192,7 @@ func set_waiting() -> void:
 
 func take_damage(amount: int) -> int:
 	var actual := max(1, amount)
+	damage_taken += actual
 	_apply_hp_change(-actual)
 	_flash(Color.RED)
 	# Krieg armor-break check

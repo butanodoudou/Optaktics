@@ -15,7 +15,7 @@ static func luffy() -> UnitData:
 		# PV  FOR TEC DEF RES AGI VOL MOV
 		 50,  12,  4,  8,  5,  8, 10,  5,
 		# gPV  gFOR gTEC gDEF gRES gAGI gVOL
-		  70,   60,  20,  40,  25,  50,  45,
+		  70,   65,  20,  45,  25,  60,  40,
 		80
 	)
 	d.abilities = [
@@ -32,7 +32,7 @@ static func zoro() -> UnitData:
 		"zoro", "Zoro",
 		UnitData.Faction.STRAW_HATS, UnitData.Category.PROTAGONIST, Color(0.15, 0.55, 0.15),
 		55, 14,  4, 10,  4,  6,  8,  4,
-		65, 70,  15, 50, 20, 40, 35,
+		50, 75,  35, 65, 20, 45, 30,
 		80
 	)
 	d.basic_tag = AbilityData.DamageTag.SLASH
@@ -50,7 +50,7 @@ static func nami() -> UnitData:
 		"nami", "Nami",
 		UnitData.Faction.STRAW_HATS, UnitData.Category.PROTAGONIST, Color(1.0, 0.65, 0.0),
 		35,  5, 12,  4, 10, 12, 14,  5,
-		45, 20, 65,  20, 50, 60, 65,
+		30, 15, 70,  25, 35, 55, 65,
 		60
 	)
 	d.abilities = [
@@ -207,7 +207,7 @@ static func higuma() -> UnitData:
 		UnitData.Faction.BANDITS, UnitData.Category.DEVIL_FRUIT_USER, Color(0.4, 0.25, 0.15),
 		60, 14,  4, 10,  5,  5,  8,  4,
 		60, 45,  15, 45, 20, 25, 30,
-		120
+		480
 	)
 	d.is_boss = true
 	d.basic_tag = AbilityData.DamageTag.SLASH
@@ -228,7 +228,7 @@ static func buggy() -> UnitData:
 		UnitData.Faction.PIRATES, UnitData.Category.DEVIL_FRUIT_USER, Color(0.85, 0.15, 0.85),
 		70, 15, 12,  8, 10,  6, 10,  4,
 		65, 50, 55,  35, 45, 30, 45,
-		150
+		600
 	)
 	d.is_boss = true
 	# Buggy est immunisé aux dégâts tranchants (son corps est segmenté)
@@ -253,7 +253,7 @@ static func kuro() -> UnitData:
 		UnitData.Faction.PIRATES, UnitData.Category.DEVIL_FRUIT_USER, Color(0.05, 0.05, 0.05),
 		80, 18,  6, 12,  8, 14, 10,  6,
 		60, 65,  20, 50, 30, 55, 35,
-		200
+		800
 	)
 	d.is_boss = true
 	d.mille_mains_agi_mult = 2.0
@@ -275,7 +275,7 @@ static func krieg() -> UnitData:
 		UnitData.Faction.PIRATES, UnitData.Category.DEVIL_FRUIT_USER, Color(0.45, 0.45, 0.50),
 		110, 20,  5, 22, 10,  4, 12,  3,
 		65, 55,  15, 40, 25, 20, 40,
-		250
+		1000
 	)
 	d.is_boss = true
 	# À 50 % PV, l'armure se brise : WEAKENED permanent + DEF divisée par 2
@@ -298,7 +298,7 @@ static func arlong() -> UnitData:
 		UnitData.Faction.PIRATES, UnitData.Category.DEVIL_FRUIT_USER, Color(0.05, 0.35, 0.55),
 		130, 26,  8, 14, 12,  8, 10,  5,
 		70, 70,  25, 50, 35, 35, 40,
-		300
+		1200
 	)
 	d.is_boss = true
 	# Régénère 15 PV par tour s'il est sur une case eau
@@ -322,7 +322,7 @@ static func smoker() -> UnitData:
 		UnitData.Faction.MARINES, UnitData.Category.DEVIL_FRUIT_USER, Color(0.85, 0.85, 0.85),
 		120, 20, 18, 16, 16, 10, 14,  5,
 		65, 55,  60, 50, 55, 45, 55,
-		280
+		1120
 	)
 	d.is_boss = true
 	# Corps de fumée : tous les dégâts PHYSIQUES sont réduits de 50 %
