@@ -11,6 +11,11 @@ extends Node
 var _arcs: Array = []
 
 func _ready() -> void:
+	_build_arcs()
+	if OS.is_debug_build():
+		BalanceCalculator.report_all(_arcs)
+
+func _build_arcs() -> void:
 	_arcs = [
 		{
 			"label": "Romance Dawn",
@@ -54,6 +59,7 @@ func _ready() -> void:
 			]
 		},
 	]
+
 
 # ── Public API ────────────────────────────────────────────────────────────────
 
