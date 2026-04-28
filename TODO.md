@@ -201,41 +201,39 @@ réévaluer si on étend à Arabasta+.
 
 ## DESIGN — Système d'objets
 
-### Questions ouvertes à trancher
+### Décisions arrêtées
 
-**1. Où les objets s'utilisent-ils ?**
-- Option A : pendant le combat uniquement (consommable = 1 action)
-- Option B : pendant l'interlude uniquement (équipement passif)
-- Option C : les deux — consommables en combat, équipement en interlude *(recommandé)*
+**Deux catégories :**
 
-**2. Quelles catégories d'objets ?**
-- **Consommables (en combat)** : Viande de Luffy (+PV), Potion, Antidote (retire statut), Miel de Nami (buff FOR 1 tour)
-- **Équipements passifs (hors combat)** : arme (+FOR ou TEC), armure (+DEF/RES), accessoire (bonus spécial)
-- **Clés narratives** : carte au trésor, vivre-carte → débloquent contenu ou combats optionnels
+**Consommables** — utilisés en combat, coûtent 1 action
+- Exemples : Viande (+PV), Potion (+PV moindre), Antidote (retire statut négatif), Étoile fumée (BLIND zone), Coup de fouet (BUFFED 2 tours)
+- Stockés dans un inventaire commun (pas par personnage)
+- Usage : action `USE_ITEM` dans le menu combat, cible selon l'objet (soi-même / allié / ennemi)
 
-**3. Comment les obtenir ?**
-- Butin de combat (drop sur ennemi vaincu, % de chance)
+**Équipements** — passifs, boostent les stats, équipés hors combat dans l'interlude
+- 3 slots par personnage : Arme, Armure, Accessoire
+- **Arme** : booste FOR ou TEC (+X flat)
+- **Armure** : booste DEF et/ou RES (+X flat)
+- **Accessoire** : bonus spécial (AGI+, PV max+, résistance statut, portée+1…)
+- Exemples thématiques : Épée de Zoro (FOR+), Climatact de Nami (TEC+, portée+1), Cuissardes de Sanji (AGI+)
+
+**Acquisition :**
+- Drop de combat (% sur certains ennemis, surtout boss)
 - Boutique dans l'interlude (Berrys gagnés après victoires)
-- Événements narratifs (Nami vole quelque chose, Usopp craft)
 
-**4. Comment se greffent-ils sur l'architecture actuelle ?**
-- `scripts/data/item_data.gd` — Resource : id, nom, type (CONSOMMABLE/EQUIPEMENT), effet
-- `scripts/progression/inventory_manager.gd` — Autoload : stocks, équipements par personnage
-- `unit.gd` : lire les bonus d'équipement dans `stat_at_level()` ou via modificateurs séparés
-- `battle_manager.gd` : ajouter action USE_ITEM dans la liste d'actions joueur
+### Architecture à implémenter
+- [ ] `scripts/data/item_data.gd` — Resource : id, nom, catégorie (CONSOMMABLE/EQUIPEMENT), slot (ARME/ARMURE/ACCESSOIRE), effets (stat_bonus: Dictionary, heal_amount, apply_status…)
+- [ ] `scripts/progression/inventory_manager.gd` — Autoload : stocks consommables, équipements par personnage
+- [ ] `unit.gd` — lire les bonus d'équipement comme modificateurs additifs sur `stat_at_level()`, exposer `equipped_items: Array[ItemData]`
+- [ ] `battle_manager.gd` — ajouter état `PLAYER_SELECT_ITEM` + action `USE_ITEM`
+- [ ] Interlude screen — onglet Inventaire : gérer équipements + boutique consommables
+- [ ] `BalanceCalculator` — bonus d'équipement intégrés dans le score PC (éviter que l'endgame soit cassé)
 
-**5. Risques à anticiper**
-- Les objets peuvent briser l'équilibre soigneusement calibré (BalanceCalculator ne les prend pas en compte)
-- Ne pas en faire trop : FFT a des centaines d'items, on peut commencer avec 10–15 bien pensés
-- Les équipements doivent rester optionnels — pas de gate "sans tel item ce combat est impossible"
+### Risques
+- Les soins en combat changent drastiquement le ratio effectif — prévoir un plafond par combat (max 2 consommables par bataille ?)
+- Les équipements doivent rester optionnels : aucun combat ne doit être impossible sans équipement spécifique
 
-### À faire quand on attaque ce sujet
-- [ ] Trancher les 3 questions de design ci-dessus
-- [ ] Créer `item_data.gd` + `inventory_manager.gd`
-- [ ] Définir la liste des 10–15 premiers objets (noms One Piece, effets simples)
-- [ ] Intégrer dans l'interlude screen (boutique + inventaire)
-- [ ] Intégrer l'action USE_ITEM en combat
-- [ ] Mettre à jour BalanceCalculator pour estimer l'impact des objets
+### Liste des 15 premiers objets à designer *(à rédiger)*
 
 ---
 
