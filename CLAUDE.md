@@ -94,6 +94,23 @@ Managed by `scripts/battle/status_manager.gd`. 7 effects: STUN (skip turn), BURN
 
 **Medium:** Interlude screen between arcs (Going Merry), equipment system (3 slots per character: Arme/Armure/Accessoire), Arc 01 B2 Base Marine + Morgan fight, git conflict markers still present in `scripts/ui/hp_bar.gd` (need cleanup).
 
+## GDScript — Pièges de typage fréquents
+
+Ces erreurs reviennent souvent avec le mode strict de Godot 4. Toujours typer explicitement dans ces cas :
+
+- **`Array.max()` / `.min()` retournent `Variant`** — même sur un `Array[float]`. Toujours typer la variable réceptrice :
+  ```gdscript
+  var max_score: float = scores.max()   # ✓
+  var max_score := scores.max()         # ✗ — Variant, erreur en mode strict
+  ```
+- **`Array.map()` retourne `Array` non typé** — utiliser `.assign()` pour peupler un `Array[T]` typé :
+  ```gdscript
+  var result: Array[Unit] = []
+  result.assign(units.filter(func(u: Unit) -> bool: return u.is_alive()))
+  ```
+- **Inférence depuis Variant contamine la variable suivante** — si une variable est `Variant`, toute variable calculée depuis elle sera aussi `Variant`. Tracer la source et typer à la racine.
+- **`:=` vs `: Type =`** — préférer `: Type =` quand la valeur de droite pourrait être `Variant` (résultat de méthode générique, dictionnaire, etc.).
+
 ## Conventions
 
 - Stats use French abbreviations in data (PV, FOR, TEC, DEF, RES, AGI, VOL) — keep these consistent.
