@@ -76,8 +76,8 @@ func show_items(unit: Unit) -> void:
 		var btn   := _make_btn(label, not unit.has_acted)
 		btn.pressed.connect(func() -> void:
 			if not unit.has_acted:
-				item_chosen.emit(item)
 				hide()
+				item_chosen.emit(item)
 		)
 		_vbox.add_child(btn)
 
