@@ -23,7 +23,7 @@ Le rythme est **combat → décision (interlude) → combat**. Pas d'exploration
 
 | Arc | Batailles | Boss | Équipier introduit |
 |-----|-----------|------|-------------------|
-| 01 — Romance Dawn   | B1 Taverne (tutoriel), B2 Base Marine | — | Zoro |
+| 01 — Romance Dawn   | B1 Village Fushia — Shanks vs bandits Higuma (tutoriel), B2 Base Marine + Morgan *(à venir)* | — | Zoro |
 | 02 — Orange Town    | B1 Entrée, B2 Buggy          | Buggy       | Nami  |
 | 03 — Syrup Village  | B1 Colline, B2 Kuro          | Kuro        | Usopp |
 | 04 — Baratie        | B1 Restaurant, B2 Krieg      | Don Krieg   | Sanji |

@@ -161,6 +161,21 @@ Les autres Straw Hats démarrent à L1 et montent naturellement jusqu'à leur ar
 
 ---
 
+## Navigation / Flux de scènes
+
+### Décision : `main_menu.tscn` comme point d'entrée (pas `battle_scene.tscn`)
+
+**Retenu** plutôt que démarrer directement en combat.
+
+**Pourquoi :**
+- Démarrer directement en combat était pratique en dev early-stage, mais le joueur n'a aucun contexte (pas de menu, pas de nouvelle partie, pas de continue)
+- Le menu principal est le seul endroit logique pour initialiser le save ou charger une partie existante avant toute scène de jeu
+- `advance_to_next_battle()` renvoie au menu si la campagne est terminée — cohérent avec le menu comme ancre de navigation
+
+**Flux complet :** `main_menu.tscn` → (nouvelle partie / continuer) → `battle_scene.tscn` → (victoire/défaite) → `battle_scene.tscn` suivante ou retour `main_menu.tscn`.
+
+---
+
 ## Technique / Architecture
 
 ### Décision : stats ennemis calculées à la volée vs stats joueurs sauvegardées
