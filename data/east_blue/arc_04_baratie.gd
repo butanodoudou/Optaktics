@@ -2,7 +2,8 @@ class_name Arc04Baratie
 
 # ── Bataille 1 : Défense du Baratie ──────────────────────────────────────────
 # Équipage complet (11-12) + Sanji (11) vs soldats Krieg
-# Composition MOYEN : 2 DPS + 1 Tank + 1 Soutien
+# Composition ÉQUILIBRÉ : 2 DPS Mêlée + 1 Tireur + 1 Tank + 1 Soutien
+# cible eff ~0.95 — 5 joueurs vs 5 ennemis (ratio count 1.00)
 static func battle_01_sea_restaurant() -> BattleConfig:
 	var c := BattleConfig.new()
 	c.battle_id   = "eb_04_01"
@@ -39,10 +40,11 @@ static func battle_01_sea_restaurant() -> BattleConfig:
 	c.add_unit(EastBlueCharacters.usopp(),  Vector2i(3, 7), true, 10)
 	c.add_unit(EastBlueCharacters.sanji(),  Vector2i(4, 5), true, 11)
 
-	c.add_unit(ArchetypeData.dps_melee_blunt(UnitData.Faction.PIRATES), Vector2i(10, 3), false, 10)
-	c.add_unit(ArchetypeData.dps_ranged(UnitData.Faction.PIRATES),      Vector2i(11, 5), false, 10)
-	c.add_unit(ArchetypeData.tank(UnitData.Faction.PIRATES),            Vector2i(10, 7), false, 10)
-	c.add_unit(ArchetypeData.support(UnitData.Faction.PIRATES),         Vector2i(9,  4), false, 9)
+	c.add_unit(ArchetypeData.dps_melee_slash(UnitData.Faction.PIRATES),  Vector2i(8,  3), false, 10)
+	c.add_unit(ArchetypeData.dps_melee_blunt(UnitData.Faction.PIRATES),  Vector2i(10, 3), false, 10)
+	c.add_unit(ArchetypeData.dps_ranged(UnitData.Faction.PIRATES),       Vector2i(11, 5), false, 10)
+	c.add_unit(ArchetypeData.tank(UnitData.Faction.PIRATES),             Vector2i(10, 7), false, 10)
+	c.add_unit(ArchetypeData.support(UnitData.Faction.PIRATES),          Vector2i(9,  4), false, 9)
 	return c
 
 

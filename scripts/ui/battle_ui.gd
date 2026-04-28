@@ -3,6 +3,7 @@ extends CanvasLayer
 
 signal action_selected(action: String)
 signal ability_selected(ability: AbilityData)
+signal item_selected(item: ItemData)
 
 var _action_menu:  ActionMenu
 var _unit_info:    UnitInfoPanel
@@ -49,6 +50,7 @@ func _build_ui() -> void:
 	_action_menu.offset_right  = -8
 	_action_menu.action_selected.connect(_on_action_selected)
 	_action_menu.ability_chosen.connect(_on_ability_chosen)
+	_action_menu.item_chosen.connect(_on_item_chosen)
 	add_child(_action_menu)
 
 	# ── Ability name flash (top-center) ──────────────────────────────────────
@@ -108,6 +110,9 @@ func show_action_menu(unit: Unit) -> void:
 
 func show_ability_menu(unit: Unit) -> void:
 	_action_menu.show_abilities(unit)
+
+func show_item_menu(unit: Unit) -> void:
+	_action_menu.show_items(unit)
 
 func hide_action_menu() -> void:
 	_action_menu.hide()
@@ -175,3 +180,6 @@ func _on_action_selected(action: String) -> void:
 
 func _on_ability_chosen(ability: AbilityData) -> void:
 	ability_selected.emit(ability)
+
+func _on_item_chosen(item: ItemData) -> void:
+	item_selected.emit(item)

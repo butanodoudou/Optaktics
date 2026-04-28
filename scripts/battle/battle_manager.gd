@@ -9,6 +9,7 @@ enum State {
 	PLAYER_CHOOSING,        # action menu open, unit can MOVE and/or ACT
 	PLAYER_SELECT_MOVE,
 	PLAYER_SELECT_TARGET,
+	PLAYER_SELECT_ITEM_TARGET,  # choosing tile for enemy-targeted item
 	EXECUTING_ACTION,
 	ENEMY_TURN,
 	POST_BATTLE_DIALOGUE,
@@ -35,11 +36,14 @@ var config: BattleConfig
 var all_units: Array[Unit] = []
 var active_unit: Unit = null
 var pending_ability: AbilityData = null
+var pending_item: ItemData = null
 var move_range_tiles: Array[Vector2i] = []
 var target_range_tiles: Array[Vector2i] = []
 
 var turn_manager: TurnManager
 var ai: AIController
+var all_player_units: Array[Unit] = []   # all player units including dead (for XP scoring)
+var _defeated_enemy_exp: int = 0         # accumulated exp_reward from enemies that died
 
 # ── Boot ──────────────────────────────────────────────────────────────────────
 
@@ -49,6 +53,7 @@ func _ready() -> void:
 	grid.tile_hovered.connect(_on_tile_hovered)
 	ui.action_selected.connect(_on_action_selected)
 	ui.ability_selected.connect(_on_ability_selected)
+	ui.item_selected.connect(_on_item_selected)
 	var cfg := GameManager.get_current_battle()
 	if cfg != null:
 		call_deferred("start_battle", cfg)
@@ -77,6 +82,8 @@ func _spawn_units() -> void:
 		unit.unit_died.connect(_on_unit_died)
 		turn_manager.register(unit)
 		all_units.append(unit)
+		if placement.is_player:
+			all_player_units.append(unit)
 
 func _center_camera() -> void:
 	camera.position = Vector2(
@@ -142,6 +149,7 @@ func _on_action_selected(action: String) -> void:
 		"move":    _enter_move_select()
 		"attack":  _start_basic_attack()
 		"ability": ui.show_ability_menu(active_unit)
+		"item":    ui.show_item_menu(active_unit)
 		"wait":    _do_wait()
 		"back":
 			_change_state(State.PLAYER_CHOOSING)
@@ -150,6 +158,46 @@ func _on_action_selected(action: String) -> void:
 func _on_ability_selected(ability: AbilityData) -> void:
 	pending_ability = ability
 	_enter_target_select()
+
+func _on_item_selected(item: ItemData) -> void:
+	pending_item = item
+	if item.target_type == ItemData.TargetType.SELF:
+		_use_item_on(active_unit)
+	else:
+		_enter_item_target_select()
+
+func _enter_item_target_select() -> void:
+	_change_state(State.PLAYER_SELECT_ITEM_TARGET)
+	target_range_tiles = grid.get_tiles_in_range(active_unit.grid_pos, pending_item.range)
+	grid.clear_overlays()
+	grid.show_attack_range(target_range_tiles)
+
+func _use_item_on(target: Unit) -> void:
+	var item := pending_item
+	pending_item = null
+	InventoryManager.consume(item.id)
+	active_unit.has_acted = true
+
+	if item.heal_hp_full:
+		var healed := target.receive_heal(target.max_pv)
+		damage_dealt.emit(target.grid_pos, healed, true)
+	elif item.heal_hp > 0:
+		var healed := target.receive_heal(item.heal_hp)
+		damage_dealt.emit(target.grid_pos, healed, true)
+
+	if item.restore_nrj_full or item.restore_nrj > 0:
+		target.restore_nrj(item.restore_nrj, item.restore_nrj_full)
+
+	if item.apply_status != StatusManager.Status.NONE:
+		target.apply_status(item.apply_status as StatusManager.Status, item.status_duration)
+
+	ui.show_ability_name(item.display_name)
+	grid.clear_overlays()
+
+	if not active_unit.has_moved:
+		_change_state(State.PLAYER_CHOOSING)
+	else:
+		_do_wait()
 
 func _start_basic_attack() -> void:
 	# Basic attack = abilities[0], always free
@@ -177,8 +225,9 @@ func _enter_target_select() -> void:
 
 func _on_tile_clicked(tile: Vector2i) -> void:
 	match current_state:
-		State.PLAYER_SELECT_MOVE:   _try_move(tile)
-		State.PLAYER_SELECT_TARGET: _try_use_ability(tile)
+		State.PLAYER_SELECT_MOVE:        _try_move(tile)
+		State.PLAYER_SELECT_TARGET:      _try_use_ability(tile)
+		State.PLAYER_SELECT_ITEM_TARGET: _try_use_item_on_tile(tile)
 		State.PLAYER_CHOOSING:
 			var u := _unit_at(tile)
 			if u != null:
@@ -228,6 +277,19 @@ func _try_use_ability(tile: Vector2i) -> void:
 		_change_state(State.PLAYER_CHOOSING)
 	else:
 		_do_wait()
+
+func _try_use_item_on_tile(tile: Vector2i) -> void:
+	if pending_item == null or tile not in target_range_tiles:
+		pending_item = null
+		_change_state(State.PLAYER_CHOOSING)
+		return
+	var target := _unit_at(tile)
+	if target == null or not target.is_alive():
+		return
+	var correct_faction := (pending_item.target_type == ItemData.TargetType.SINGLE_ENEMY) == (target.is_player != active_unit.is_player)
+	if not correct_faction:
+		return
+	_use_item_on(target)
 
 func _do_wait() -> void:
 	active_unit.end_turn()
@@ -302,15 +364,19 @@ func _resolve_hit(caster: Unit, ability: AbilityData, tgt: Unit) -> void:
 	if ability.damage_type == AbilityData.DamageType.HEAL:
 		var healed := tgt.receive_heal(amount)
 		damage_dealt.emit(tgt.grid_pos, healed, true)
+		caster.healing_done += healed
 	elif ability.damage_type == AbilityData.DamageType.STATUS_ONLY:
 		pass
 	else:
+		tgt._last_attacker = caster
 		var dmg := tgt.take_damage(amount)
 		damage_dealt.emit(tgt.grid_pos, dmg, false)
+		caster.damage_dealt += dmg
 
 	# Apply status effect
 	if ability.apply_status != StatusManager.Status.NONE and randf() < ability.status_chance:
 		tgt.apply_status(ability.apply_status as StatusManager.Status, ability.status_duration)
+		caster.statuses_applied += 1
 
 	# Knockback
 	if ability.knockback > 0:
@@ -377,21 +443,76 @@ func _check_battle_end() -> bool:
 	return false
 
 func _award_exp() -> void:
-	var total_exp := 0
-	for u in all_units:
-		if not u.is_player:
-			total_exp += u.data.exp_reward
-	if total_exp <= 0:
+	var base_xp := _defeated_enemy_exp
+	if base_xp <= 0:
 		return
-	var survivors: Array[String] = []
-	for u in all_units:
-		if u.is_player and u.is_alive() and u.data.id in SaveManager.STRAW_HAT_IDS:
-			survivors.append(u.data.id)
-	if survivors.is_empty():
+
+	# Collect all player units that participated (alive + dead)
+	var participants: Array[Unit] = []
+	for u in all_player_units:
+		if u.data.id in SaveManager.STRAW_HAT_IDS:
+			participants.append(u)
+	if participants.is_empty():
 		return
-	SaveManager.award_exp(survivors, total_exp)
+
+	# Compute combat scores
+	var scores: Array[float] = []
+	for u in participants:
+		var s := float(u.kills * 40 + u.damage_dealt * 0.4
+					 + u.damage_taken * 0.2 + u.healing_done * 0.4
+					 + u.statuses_applied * 20)
+		scores.append(maxf(s, 1.0))
+
+	var max_score := scores.max()
+
+	# Build XP amounts dict
+	var char_amounts := {}
+	for i in range(participants.size()):
+		var u    := participants[i]
+		var ratio:= scores[i] / max_score
+		var factor_contrib := lerpf(0.70, 1.30, ratio)
+		var factor_survival := 1.0 if u.is_alive() else 0.0
+		var xp := roundi(float(base_xp) * factor_contrib * factor_survival)
+		if xp > 0:
+			char_amounts[u.data.id] = xp
+
+	# Award XP and apply probabilistic growth for each level gained
+	var levels_gained := SaveManager.award_exp(char_amounts)
+	for u in participants:
+		var id       := u.data.id
+		var xp_amount: int = char_amounts.get(id, 0)
+		if xp_amount <= 0:
+			print("  %s: 0 XP (mort en combat)" % u.data.display_name)
+			continue
+		var gained: int = levels_gained.get(id, 0)
+		if gained > 0:
+			var growth_gains := SaveManager.apply_growth_rolls(id, u.data.get_growth_rates(), gained)
+			print("★ %s → Level %d (+%d niv.) — %s" % [
+				u.data.display_name,
+				SaveManager.get_character_level(id),
+				gained,
+				_format_gains(growth_gains)
+			])
+		print("  %s: +%d XP → %d / %d (L%d)" % [
+			u.data.display_name,
+			xp_amount,
+			SaveManager.get_character_exp(id),
+			ceili(80.0 * pow(SaveManager.get_character_level(id), 1.5)),
+			SaveManager.get_character_level(id)
+		])
+
+func _format_gains(gains: Dictionary) -> String:
+	var parts := []
+	for stat in gains:
+		if gains[stat] > 0:
+			parts.append("+%d %s" % [gains[stat], stat.to_upper()])
+	return ", ".join(parts) if not parts.is_empty() else "—"
 
 func _on_unit_died(unit: Unit) -> void:
+	if is_instance_valid(unit._last_attacker):
+		unit._last_attacker.kills += 1
+	if not unit.is_player:
+		_defeated_enemy_exp += unit.data.exp_reward
 	turn_manager.unregister(unit)
 	all_units.erase(unit)
 	_check_battle_end()

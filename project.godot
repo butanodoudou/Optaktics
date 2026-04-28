@@ -23,6 +23,7 @@ config/features=PackedStringArray("4.6", "GL Compatibility")
 
 SaveManager="*res://scripts/progression/save_manager.gd"
 GameManager="*res://scripts/progression/game_manager.gd"
+InventoryManager="*res://scripts/progression/inventory_manager.gd"
 
 [display]
 

@@ -44,7 +44,8 @@ static func battle_01_town_entrance() -> BattleConfig:
 
 
 # ── Bataille 2 : Grand Chapiteau de Buggy ────────────────────────────────────
-# Composition DIFFICILE : 3 DPS + 1 Tank + 1 Soutien + Buggy (boss)
+# Composition ÉQUILIBRÉ : 1 DPS Slash + 1 DPS Blunt + 1 Tank + Buggy (boss 1)
+# cible eff ~1.00 — 1er boss, 3 joueurs vs 4 ennemis (ratio count 1.33)
 static func battle_02_buggy_showdown() -> BattleConfig:
 	var c := BattleConfig.new()
 	c.battle_id   = "eb_02_02"
@@ -79,7 +80,5 @@ static func battle_02_buggy_showdown() -> BattleConfig:
 	c.add_unit(EastBlueCharacters.buggy(),                               Vector2i(11, 4), false, 8)
 	c.add_unit(ArchetypeData.dps_melee_slash(UnitData.Faction.PIRATES),  Vector2i(9,  3), false, 6)
 	c.add_unit(ArchetypeData.dps_melee_blunt(UnitData.Faction.PIRATES),  Vector2i(8,  6), false, 6)
-	c.add_unit(ArchetypeData.dps_ranged(UnitData.Faction.PIRATES),       Vector2i(10, 2), false, 6)
-	c.add_unit(ArchetypeData.tank(UnitData.Faction.PIRATES),             Vector2i(9,  6), false, 6)
-	c.add_unit(ArchetypeData.support(UnitData.Faction.PIRATES),          Vector2i(8,  2), false, 5)
+	c.add_unit(ArchetypeData.tank(UnitData.Faction.PIRATES),             Vector2i(9,  5), false, 6)
 	return c
