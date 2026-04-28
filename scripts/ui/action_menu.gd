@@ -3,6 +3,7 @@ extends PanelContainer
 
 signal action_selected(action: String)
 signal ability_chosen(ability: AbilityData)
+signal item_chosen(item: ItemData)
 
 var _vbox: VBoxContainer
 var _in_ability_submenu: bool = false
@@ -21,13 +22,15 @@ func show_main(unit: Unit) -> void:
 	_in_ability_submenu = false
 	_clear()
 
-	var can_move  := not unit.has_moved
-	var can_act   := not unit.has_acted
-	var has_skills := unit.data.abilities.size() > 1  # abilities[0] = basic
+	var can_move   := not unit.has_moved
+	var can_act    := not unit.has_acted
+	var has_skills := unit.data.abilities.size() > 1
+	var has_items  := not InventoryManager.get_available().is_empty()
 
 	_btn("Déplacer",    "move",    can_move)
 	_btn("Attaquer",    "attack",  can_act)
 	_btn("Compétence",  "ability", can_act and has_skills)
+	_btn("Objet",       "item",    can_act and has_items)
 	_separator()
 	_btn("Passer",      "wait",    true)
 
@@ -50,6 +53,30 @@ func show_abilities(unit: Unit) -> void:
 		btn.pressed.connect(func() -> void:
 			if can_use:
 				ability_chosen.emit(ab)
+				hide()
+		)
+		_vbox.add_child(btn)
+
+	_separator()
+	var back := _make_btn("← Retour", true)
+	back.pressed.connect(func() -> void: action_selected.emit("back"))
+	_vbox.add_child(back)
+	show()
+
+# ── Item sub-menu ─────────────────────────────────────────────────────────────
+
+func show_items(unit: Unit) -> void:
+	_in_ability_submenu = false
+	_clear()
+
+	var items := InventoryManager.get_available()
+	for item in items:
+		var qty   := InventoryManager.count(item.id)
+		var label := "%s  ×%d" % [item.display_name, qty]
+		var btn   := _make_btn(label, not unit.has_acted)
+		btn.pressed.connect(func() -> void:
+			if not unit.has_acted:
+				item_chosen.emit(item)
 				hide()
 		)
 		_vbox.add_child(btn)

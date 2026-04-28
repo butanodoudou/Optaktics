@@ -9,6 +9,7 @@ enum Status {
 	BLIND     = 4,   # hit rate -40%
 	WEAKENED  = 5,   # FOR -30%
 	BUFFED    = 6,   # FOR +30%
+	HASTED    = 7,   # AGI ×1.50, improves turn order
 }
 
 const NAMES: Dictionary = {
@@ -18,6 +19,7 @@ const NAMES: Dictionary = {
 	Status.BLIND:    "AVEUGLE",
 	Status.WEAKENED: "AFFAIBLI",
 	Status.BUFFED:   "RENFORCÉ",
+	Status.HASTED:   "RAPIDE",
 }
 
 const COLORS: Dictionary = {
@@ -27,6 +29,7 @@ const COLORS: Dictionary = {
 	Status.BLIND:    Color(0.5, 0.5, 0.5),
 	Status.WEAKENED: Color(0.8, 0.2, 0.8),
 	Status.BUFFED:   Color(0.2, 1.0, 0.5),
+	Status.HASTED:   Color(0.3, 1.0, 0.6),
 }
 
 # Burn damage per turn: % of max PV
@@ -89,6 +92,10 @@ static func get_for_multiplier(statuses: Array) -> float:
 	if has(statuses, Status.WEAKENED): mult *= 0.70
 	if has(statuses, Status.BUFFED):   mult *= 1.30
 	return mult
+
+static func get_agi_multiplier(statuses: Array) -> float:
+	if has(statuses, Status.HASTED): return 1.50
+	return 1.0
 
 static func get_def_multiplier(statuses: Array) -> float:
 	if has(statuses, Status.FROZEN): return 2.0

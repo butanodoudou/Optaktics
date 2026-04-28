@@ -195,6 +195,13 @@ func spend_nrj(amount: int) -> void:
 	current_nrj = max(0, current_nrj - amount)
 	nrj_changed.emit(self, old, current_nrj)
 
+func restore_nrj(amount: int, full: bool = false) -> int:
+	var old := current_nrj
+	current_nrj = nrj_max if full else min(nrj_max, current_nrj + amount)
+	nrj_changed.emit(self, old, current_nrj)
+	_flash(Color(0.4, 0.8, 1.0))
+	return current_nrj - old
+
 func can_afford(ability: AbilityData) -> bool:
 	return current_nrj >= ability.nrj_cost
 
@@ -250,7 +257,9 @@ func water_regen() -> void:
 		receive_heal(data.water_regen_pv)
 
 func effective_agi() -> int:
-	return agi_stat  # already doubled when mille_mains_active
+	# agi_stat already doubled when mille_mains_active
+	var mult := StatusManager.get_agi_multiplier(statuses)
+	return int(agi_stat * mult)
 
 # ── Movement ──────────────────────────────────────────────────────────────────
 

@@ -221,19 +221,29 @@ réévaluer si on étend à Arabasta+.
 - Drop de combat (% sur certains ennemis, surtout boss)
 - Boutique dans l'interlude (Berrys gagnés après victoires)
 
-### Architecture à implémenter
-- [ ] `scripts/data/item_data.gd` — Resource : id, nom, catégorie (CONSOMMABLE/EQUIPEMENT), slot (ARME/ARMURE/ACCESSOIRE), effets (stat_bonus: Dictionary, heal_amount, apply_status…)
-- [ ] `scripts/progression/inventory_manager.gd` — Autoload : stocks consommables, équipements par personnage
-- [ ] `unit.gd` — lire les bonus d'équipement comme modificateurs additifs sur `stat_at_level()`, exposer `equipped_items: Array[ItemData]`
-- [ ] `battle_manager.gd` — ajouter état `PLAYER_SELECT_ITEM` + action `USE_ITEM`
-- [ ] Interlude screen — onglet Inventaire : gérer équipements + boutique consommables
-- [ ] `BalanceCalculator` — bonus d'équipement intégrés dans le score PC (éviter que l'endgame soit cassé)
+### Consommables — Implémenté
+- [x] `item_data.gd` — Resource (heal HP, restore NRJ, apply status, target SELF/ALLY/ENEMY)
+- [x] `items_catalog.gd` — 11 objets : 4 nourritures, 3 alcools, 2 boosts (BUFFED/HASTED), 2 débuffs
+- [x] `inventory_manager.gd` — Autoload (stock mémoire, stock de test pré-rempli)
+- [x] `status_manager.gd` — Nouveau status HASTED (AGI ×1.50)
+- [x] `unit.gd` — `restore_nrj()` + `effective_agi()` HASTED-aware
+- [x] `action_menu.gd` — Bouton "Objet" + sous-menu quantités
+- [x] `battle_manager.gd` — État PLAYER_SELECT_ITEM_TARGET + résolution d'objet
+- [x] `project.godot` — InventoryManager autoload
+
+### Consommables — Suite
+- [ ] Brancher sur SaveManager (persistance inventaire entre combats)
+- [ ] Gain de Berrys à la fin des combats + drop aléatoire sur ennemis
+- [ ] Intégrer dans l'interlude screen (boutique + inventaire)
+
+### Équipements — À faire
+- [ ] `unit.gd` — 3 slots (ARME/ARMURE/ACCESSOIRE), modificateurs additifs sur stats
+- [ ] Exemples : Épée de Zoro (FOR+), Climatact de Nami (TEC+, portée+1), Cuissardes de Sanji (AGI+)
+- [ ] Interlude screen — onglet équipements par personnage
+- [ ] `BalanceCalculator` — intégrer bonus équipements dans le score PC
 
 ### Risques
-- Les soins en combat changent drastiquement le ratio effectif — prévoir un plafond par combat (max 2 consommables par bataille ?)
 - Les équipements doivent rester optionnels : aucun combat ne doit être impossible sans équipement spécifique
-
-### Liste des 15 premiers objets à designer *(à rédiger)*
 
 ---
 
