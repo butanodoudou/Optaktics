@@ -112,13 +112,70 @@ Progression des Straw Hats entre les arcs.
 - [ ] **Sons / Musique** — Intégrer des pistes libres de droits One Piece-inspired
 
 ### Contenu
+
+#### Arc 01 — Romance Dawn (révisions)
+- [ ] **Base Marine — Redesign philosophie** : beaucoup d'ennemis faibles plutôt que peu d'ennemis forts
+  - L'idée : le joueur apprend à gérer les positions et l'économie d'actions face à un nombre supérieur
+  - Concept : 6–7 marines L1 très faibles (PV bas, pas de skill) vs Luffy+Zoro L4
+  - Chaque marine seul est non-menaçant, mais en groupe ils submergent si mal géré
+  - Ajuster les taux de croissance des archétypes ou créer un archétype "Recrue Marine" avec stats minimales
+- [ ] **Combat contre Morgan** — Ajouter un 3e combat à Arc 01 (ou boss de B2 après avoir défait les marines)
+  - Morgan : Capitaine de la base, hache géante, bras métallique (BLUNT, portée 1 étendue)
+  - Mécanique possible : après avoir battu les marines, Morgan arrive en renfort → vague 2
+  - Stats suggérées : HP moyen, FOR très élevée, DEF haute, AGI faible (boss tanky mais lent)
+  - Cible difficulté : FACILE-ÉQUILIBRÉ pour clôturer Arc 01 proprement
+
+#### Autres arcs
 - [ ] **Arc 07+** — Arabasta, Skypiea, Water 7 (hors scope East Blue mais prévoir la structure)
 - [ ] **Sous-boss** — Ajouter Pearl (Baratie), Django (Syrup Village) comme combats intermédiaires
+
+#### Entre les combats — Écran d'interlude *(voir section DESIGN)*
 
 ### UI / UX
 - [ ] **Résoudre les conflits de fusion dans les fichiers UI** — `hp_bar.gd`, `battle_ui.gd` contiennent encore des marqueurs de conflit git (à nettoyer)
 - [ ] **Aperçu des dégâts** — Afficher les dégâts estimés avant de confirmer une attaque
 - [ ] **Indicateur de portée des compétences** — Overlay visuel distinct pour portée vs zone d'effet
+
+---
+
+---
+
+## DESIGN — Entre les combats
+
+### Décision : écran d'interlude sur le Going Merry
+
+**Rejeté :** monde semi-ouvert (trop coûteux, hors scope, risque de diluer le focus tactique)
+
+**Retenu :** écran d'interlude narratif entre chaque arc, avec 3 zones cliquables :
+
+```
+┌─────────────────────────────────────────────┐
+│  [Carte du monde] — position de l'équipage  │
+│                                             │
+│  [Going Merry — pont]                       │
+│    → Dialogue court entre 2 personnages     │
+│    → Reflet de l'arc qui vient de se passer │
+│                                             │
+│  [Arbre de compétences]                     │
+│    → Dépenser les Points de Talent gagnés   │
+│                                             │
+│  [Continuer] → prochain arc                 │
+└─────────────────────────────────────────────┘
+```
+
+**Entre deux batailles d'un même arc** : pas d'écran, juste les dialogues post/pré bataille existants — suffit pour la narration.
+
+**Carte du monde** : vue simplifiée East Blue (pas interactive), montre juste la route Fushia → Loguetown. Pas de déplacement libre, pas de PNJ. Simple image avec position actuelle mise en avant.
+
+**Pourquoi pas le monde semi-ouvert :**
+- Nécessiterait exploration, collisions, PNJ, boutiques, transitions de scène → scope ×3
+- Le rythme tactique (combat → décision → combat) est le cœur du jeu
+- Fire Emblem Three Houses a prouvé que le hub peut devenir une charge narrative — à éviter pour un premier scope
+
+**Fichiers à créer :**
+- `scripts/ui/interlude_screen.gd` — scène Godot entre les arcs
+- `data/east_blue/interludes.gd` — dialogues des interludes par arc
+- Image/scène Going Merry (placeholder acceptable)
 
 ---
 
