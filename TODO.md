@@ -159,9 +159,29 @@ Progression des Straw Hats entre les arcs.
 │  [Arbre de compétences]                     │
 │    → Dépenser les Points de Talent gagnés   │
 │                                             │
+│  [Boutique / Objets] ← à concevoir          │
+│    → Acheter/gérer les objets               │
+│                                             │
 │  [Continuer] → prochain arc                 │
 └─────────────────────────────────────────────┘
 ```
+
+### Option FFT — Carte en nœuds + combats aléatoires
+*(À évaluer — scope plus large mais apport réel)*
+
+FFT utilise une carte monde en nœuds (pas d'exploration libre) :
+- Nœuds fixes : villes (boutique, recrutement) + lieux de bataille scénarisés
+- Routes entre nœuds : combats aléatoires optionnels pour grinder
+- Narration 100% dans les cutscenes pré/post combat (PNJ muets en ville)
+
+**Apport pour Optaktics :** les combats aléatoires donneraient du grind optionnel
+sans forcer — le joueur sous-leveled peut rattraper. Procédural ou pool de configs
+prédéfinies (plus simple).
+
+**Coût :** carte interactive, système de déplacement, génération de combats → feature à part entière, pas un ajout mineur.
+
+**Décision provisoire :** garder l'interlude simple pour le scope East Blue,
+réévaluer si on étend à Arabasta+.
 
 **Entre deux batailles d'un même arc** : pas d'écran, juste les dialogues post/pré bataille existants — suffit pour la narration.
 
@@ -176,6 +196,46 @@ Progression des Straw Hats entre les arcs.
 - `scripts/ui/interlude_screen.gd` — scène Godot entre les arcs
 - `data/east_blue/interludes.gd` — dialogues des interludes par arc
 - Image/scène Going Merry (placeholder acceptable)
+
+---
+
+## DESIGN — Système d'objets
+
+### Questions ouvertes à trancher
+
+**1. Où les objets s'utilisent-ils ?**
+- Option A : pendant le combat uniquement (consommable = 1 action)
+- Option B : pendant l'interlude uniquement (équipement passif)
+- Option C : les deux — consommables en combat, équipement en interlude *(recommandé)*
+
+**2. Quelles catégories d'objets ?**
+- **Consommables (en combat)** : Viande de Luffy (+PV), Potion, Antidote (retire statut), Miel de Nami (buff FOR 1 tour)
+- **Équipements passifs (hors combat)** : arme (+FOR ou TEC), armure (+DEF/RES), accessoire (bonus spécial)
+- **Clés narratives** : carte au trésor, vivre-carte → débloquent contenu ou combats optionnels
+
+**3. Comment les obtenir ?**
+- Butin de combat (drop sur ennemi vaincu, % de chance)
+- Boutique dans l'interlude (Berrys gagnés après victoires)
+- Événements narratifs (Nami vole quelque chose, Usopp craft)
+
+**4. Comment se greffent-ils sur l'architecture actuelle ?**
+- `scripts/data/item_data.gd` — Resource : id, nom, type (CONSOMMABLE/EQUIPEMENT), effet
+- `scripts/progression/inventory_manager.gd` — Autoload : stocks, équipements par personnage
+- `unit.gd` : lire les bonus d'équipement dans `stat_at_level()` ou via modificateurs séparés
+- `battle_manager.gd` : ajouter action USE_ITEM dans la liste d'actions joueur
+
+**5. Risques à anticiper**
+- Les objets peuvent briser l'équilibre soigneusement calibré (BalanceCalculator ne les prend pas en compte)
+- Ne pas en faire trop : FFT a des centaines d'items, on peut commencer avec 10–15 bien pensés
+- Les équipements doivent rester optionnels — pas de gate "sans tel item ce combat est impossible"
+
+### À faire quand on attaque ce sujet
+- [ ] Trancher les 3 questions de design ci-dessus
+- [ ] Créer `item_data.gd` + `inventory_manager.gd`
+- [ ] Définir la liste des 10–15 premiers objets (noms One Piece, effets simples)
+- [ ] Intégrer dans l'interlude screen (boutique + inventaire)
+- [ ] Intégrer l'action USE_ITEM en combat
+- [ ] Mettre à jour BalanceCalculator pour estimer l'impact des objets
 
 ---
 
