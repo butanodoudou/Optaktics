@@ -3,7 +3,7 @@ class_name Arc01RomanceDawn
 # ── Bataille 1 : La Taverne de Fushia ─ Tutoriel ──────────────────────────────
 # Pirates aux Cheveux Rouges (Shanks, Beckmann, Lucky Roo, Yassop) vs bandits Higuma
 # Tutoriel : 4 unités aux styles variés pour apprendre les mécaniques
-# Composition ennemis : 3 DPS + 2 Tank + Higuma — MOYEN
+# Composition ennemis : 3 DPS + 2 Tank + Higuma — TROP FACILE (intentionnel)
 static func battle_01_tutorial() -> BattleConfig:
 	var c := BattleConfig.new()
 	c.battle_id   = "eb_01_01"
@@ -55,7 +55,7 @@ static func battle_01_tutorial() -> BattleConfig:
 
 # ── Bataille 2 : Base Marine ─ Sauvetage de Zoro ─────────────────────────────
 # Luffy (Niv.4) + Zoro (Niv.4) vs patrouille marine
-# Composition : 3 DPS Distance + 2 Tank — MOYEN
+# Composition : 2 DPS Mêlée + 1 Tireur — FACILE (cible eff ~0.70)
 static func battle_02_zoro_rescue() -> BattleConfig:
 	var c := BattleConfig.new()
 	c.battle_id   = "eb_01_02"
@@ -88,9 +88,7 @@ static func battle_02_zoro_rescue() -> BattleConfig:
 	c.add_unit(EastBlueCharacters.luffy(), Vector2i(2, 4), true, 4)
 	c.add_unit(EastBlueCharacters.zoro(),  Vector2i(2, 6), true, 4)
 
-	c.add_unit(ArchetypeData.dps_ranged(UnitData.Faction.MARINES),     Vector2i(9, 2),  false, 3)
-	c.add_unit(ArchetypeData.dps_ranged(UnitData.Faction.MARINES),     Vector2i(11, 2), false, 3)
-	c.add_unit(ArchetypeData.tank(UnitData.Faction.MARINES),           Vector2i(8, 5),  false, 3)
-	c.add_unit(ArchetypeData.dps_ranged(UnitData.Faction.MARINES),     Vector2i(10, 7), false, 3)
-	c.add_unit(ArchetypeData.tank(UnitData.Faction.MARINES),           Vector2i(12, 5), false, 3)
+	c.add_unit(ArchetypeData.dps_melee_slash(UnitData.Faction.MARINES), Vector2i(9,  2), false, 3)
+	c.add_unit(ArchetypeData.dps_melee_blunt(UnitData.Faction.MARINES), Vector2i(10, 6), false, 3)
+	c.add_unit(ArchetypeData.dps_ranged(UnitData.Faction.MARINES),      Vector2i(11, 4), false, 2)
 	return c

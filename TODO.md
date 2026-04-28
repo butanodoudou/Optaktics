@@ -1,5 +1,54 @@
 # Optaktics — One Piece Tactics | TODO
 
+---
+
+## DESIGN — Courbe de difficulté
+
+### Principe
+11 batailles sur 6 arcs, progression linéaire de TROP FACILE à TROP DUR.
+Les batailles B1 de chaque arc sont des introductions ; les B2 montent la pression.
+Chaque arc introduit un nouvel équipier → le joueur apprend ses mécaniques dans la B1.
+
+### Système BalanceCalculator
+Score PC d'une unité au niveau N :
+
+```
+durabilité  = PV × (1 + (DEF + RES) / 30)
+offense     = max(FOR, TEC) × meilleur_multiplicateur_skill
+tempo       = 1 + AGI / 40
+bonus_range = ×1.0 (portée 1) | ×1.15 (portée 2-3) | ×1.30 (portée ≥4)
+PC          = (durabilité × offense × tempo × bonus_range) / 1000
+
+ratio_stats   = Σ PC_ennemis / Σ PC_joueurs
+ratio_count   = nb_ennemis / nb_joueurs
+ratio_effectif = ratio_stats × √(ratio_count)
+```
+
+`BalanceCalculator.report_all()` s'exécute au démarrage en debug build.
+
+### Cibles par bataille
+
+| #  | Arc — Bataille                     | Ratio eff cible | Verdict cible |
+|----|------------------------------------|-----------------|---------------|
+| 01 | Romance Dawn — Taverne (tutoriel)  | ~0.40           | TROP FACILE   |
+| 02 | Romance Dawn — Base Marine         | ~0.70           | Facile        |
+| 03 | Orange Town — Entrée               | ~0.80           | Facile        |
+| 04 | Orange Town — Buggy (boss 1)       | ~1.00           | Équilibré     |
+| 05 | Syrup Village — Colline            | ~1.00           | Équilibré     |
+| 06 | Syrup Village — Kuro (boss 2)      | ~1.15           | Difficile     |
+| 07 | Baratie — Défense du pont          | ~0.95           | Équilibré     |
+| 08 | Baratie — Krieg (boss 3)           | ~1.20           | Difficile     |
+| 09 | Arlong Park — Portail              | ~1.20           | Difficile     |
+| 10 | Arlong Park — Arlong (boss 4)      | ~1.30           | Difficile     |
+| 11 | Loguetown — Smoker (boss final)    | ~1.38           | TROP DUR      |
+
+### Leviers d'ajustement
+1. **Nombre d'ennemis** — levier principal (impacte ratio_count via √)
+2. **Niveau des ennemis** — ajustement fin des stats
+3. **Composition typologique** — Tireurs (range ×1.30) > DPS mêlée > Tanks
+
+---
+
 ## PRIORITÉ HAUTE
 
 ### Boss — Techniques uniques
@@ -63,7 +112,6 @@ Progression des Straw Hats entre les arcs.
 - [ ] **Sons / Musique** — Intégrer des pistes libres de droits One Piece-inspired
 
 ### Contenu
-- [ ] **Arc 01 Romance Dawn** — Revoir composition ennemis (actuellement trop simple pour tutoriel)
 - [ ] **Arc 07+** — Arabasta, Skypiea, Water 7 (hors scope East Blue mais prévoir la structure)
 - [ ] **Sous-boss** — Ajouter Pearl (Baratie), Django (Syrup Village) comme combats intermédiaires
 
@@ -77,7 +125,7 @@ Progression des Straw Hats entre les arcs.
 ## PRIORITÉ BASSE / FUTUR
 
 - [ ] **Mode histoire complet** — Rejouer depuis le début, arcs enchaînés
-- [ ] **Difficulté ajustable** — Modificateur global sur stats ennemies
+- [ ] **Difficulté ajustable** — Modificateur global sur stats ennemies (×0.8 Facile / ×1.0 Normal / ×1.2 Difficile)
 - [ ] **Export HTML5 / itch.io** — Tester et publier
 - [ ] **Alabasta saga** — Grand Line commence
 - [ ] **Localization** — Passer tout en français cohérent (certains dialogues encore en anglais)
@@ -97,3 +145,6 @@ Progression des Straw Hats entre les arcs.
 - [x] 5 Straw Hats avec compétences East Blue (sans Gear/Diable Jambe/Clima-Tact)
 - [x] 6 arcs East Blue configurés avec dialogues en français et niveaux par unité
 - [x] Système de tour AGI-based avec variance aléatoire par round
+- [x] **BalanceCalculator** — score PC par unité + ratio effectif (stats × √count) + rapport console au démarrage debug
+- [x] **Courbe de difficulté définie** — 11 cibles de ratio eff de ~0.40 (tutoriel) à ~1.38 (boss final)
+- [x] **Compositions de batailles rééquilibrées** — Arc01-B2, Arc02-B2, Arc04-B1, Arc05-B1 ajustés

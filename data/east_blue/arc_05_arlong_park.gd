@@ -2,7 +2,8 @@ class_name Arc05ArlongPark
 
 # ── Bataille 1 : Portail d'entrée ─────────────────────────────────────────────
 # Équipage complet (15) vs hommes-poissons
-# Composition DIFFICILE : 3 DPS + 1 Tank + 1 Soutien
+# Composition DIFFICILE : 3 DPS + 1 Tank + 1 Soutien — cible eff ~1.20
+# Ennemis au même niveau que les joueurs (L15) pour un combat serré
 static func battle_01_front_gate() -> BattleConfig:
 	var c := BattleConfig.new()
 	c.battle_id   = "eb_05_01"
@@ -38,11 +39,11 @@ static func battle_01_front_gate() -> BattleConfig:
 	c.add_unit(EastBlueCharacters.usopp(),  Vector2i(2, 7), true, 14)
 	c.add_unit(EastBlueCharacters.sanji(),  Vector2i(1, 5), true, 15)
 
-	c.add_unit(ArchetypeData.dps_melee_slash(UnitData.Faction.PIRATES), Vector2i(8,  2), false, 14)
-	c.add_unit(ArchetypeData.dps_melee_slash(UnitData.Faction.PIRATES), Vector2i(10, 5), false, 14)
-	c.add_unit(ArchetypeData.dps_melee_blunt(UnitData.Faction.PIRATES), Vector2i(8,  7), false, 14)
-	c.add_unit(ArchetypeData.tank(UnitData.Faction.PIRATES),            Vector2i(9,  4), false, 14)
-	c.add_unit(ArchetypeData.support(UnitData.Faction.PIRATES),         Vector2i(11, 3), false, 13)
+	c.add_unit(ArchetypeData.dps_melee_slash(UnitData.Faction.PIRATES), Vector2i(8,  2), false, 15)
+	c.add_unit(ArchetypeData.dps_melee_slash(UnitData.Faction.PIRATES), Vector2i(10, 5), false, 15)
+	c.add_unit(ArchetypeData.dps_melee_blunt(UnitData.Faction.PIRATES), Vector2i(8,  7), false, 15)
+	c.add_unit(ArchetypeData.tank(UnitData.Faction.PIRATES),            Vector2i(9,  4), false, 15)
+	c.add_unit(ArchetypeData.support(UnitData.Faction.PIRATES),         Vector2i(11, 3), false, 14)
 	return c
 
 
