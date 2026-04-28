@@ -105,7 +105,7 @@ static func battle_02_zoro_rescue() -> BattleConfig:
 	c.add_unit(EastBlueCharacters.luffy(), Vector2i(2, 4), true, 4)
 	c.add_unit(EastBlueCharacters.zoro(),  Vector2i(2, 6), true, 4)
 
-	c.add_unit(ArchetypeData.dps_melee_slash(UnitData.Faction.MARINES), Vector2i(9,  2), false, 3)
-	c.add_unit(ArchetypeData.dps_melee_blunt(UnitData.Faction.MARINES), Vector2i(10, 6), false, 3)
-	c.add_unit(ArchetypeData.dps_ranged(UnitData.Faction.MARINES),      Vector2i(11, 4), false, 2)
+	c.add_unit(ArchetypeData.dps_melee_slash(UnitData.Faction.MARINES), Vector2i(9,  2), false, 2)
+	c.add_unit(ArchetypeData.dps_melee_blunt(UnitData.Faction.MARINES), Vector2i(10, 6), false, 2)
+	c.add_unit(ArchetypeData.dps_ranged(UnitData.Faction.MARINES),      Vector2i(11, 4), false, 1)
 	return c
