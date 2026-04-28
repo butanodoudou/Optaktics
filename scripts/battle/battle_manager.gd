@@ -109,7 +109,9 @@ func _calc_next_turn() -> void:
 		return
 	active_unit.reset_turn()
 	unit_turn_started.emit(active_unit)
-	ui.update_turn_order(turn_manager.peek_order())
+	var order := turn_manager.peek_order()
+	order.push_front(active_unit)
+	ui.update_turn_order(order)
 	ui.show_unit_info(active_unit)
 
 	# Start-of-turn effects
@@ -302,8 +304,7 @@ func _do_wait() -> void:
 func _execute_ability(caster: Unit, ability: AbilityData, target_tile: Vector2i) -> void:
 	if ability.nrj_cost > 0:
 		caster.spend_nrj(ability.nrj_cost)
-	if ability.nrj_cost > 0 or ability.id != "basic":
-		caster.has_acted = true
+	caster.has_acted = true
 
 	ability_used.emit(caster, ability, [])
 	ui.show_ability_name(ability.display_name)

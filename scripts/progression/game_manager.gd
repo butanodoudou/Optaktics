@@ -87,7 +87,10 @@ func advance_to_next_battle() -> void:
 	var arc_idx := SaveManager.get_current_arc()
 	var bat_count: int = _arcs[arc_idx]["battles"].size() if arc_idx < _arcs.size() else 1
 	SaveManager.advance_to_next_battle(bat_count)
-	get_tree().reload_current_scene()
+	if is_campaign_complete():
+		get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
+	else:
+		get_tree().change_scene_to_file("res://scenes/battle/battle_scene.tscn")
 
 # How many battles are in the current arc (used by SaveManager.advance_to_next_battle).
 func current_arc_battle_count() -> int:

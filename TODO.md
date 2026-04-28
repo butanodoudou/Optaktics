@@ -113,7 +113,9 @@ Progression des Straw Hats entre les arcs.
 
 ### Contenu
 
-#### Arc 01 — Romance Dawn (révisions)
+- [x] **Arc 01 Romance Dawn** — Rééquilibré : Pirates Rouges niv.20 vs 13 bandits niv.4, décor extérieur, dialogues lore-fidèles
+
+#### Arc 01 — Romance Dawn (révisions futures)
 - [ ] **Base Marine — Redesign philosophie** : beaucoup d'ennemis faibles plutôt que peu d'ennemis forts
   - L'idée : le joueur apprend à gérer les positions et l'économie d'actions face à un nombre supérieur
   - Concept : 6–7 marines L1 très faibles (PV bas, pas de skill) vs Luffy+Zoro L4
@@ -135,8 +137,6 @@ Progression des Straw Hats entre les arcs.
 - [ ] **Résoudre les conflits de fusion dans les fichiers UI** — `hp_bar.gd`, `battle_ui.gd` contiennent encore des marqueurs de conflit git (à nettoyer)
 - [ ] **Aperçu des dégâts** — Afficher les dégâts estimés avant de confirmer une attaque
 - [ ] **Indicateur de portée des compétences** — Overlay visuel distinct pour portée vs zone d'effet
-
----
 
 ---
 
@@ -244,6 +244,12 @@ réévaluer si on étend à Arabasta+.
 
 ### Risques
 - Les équipements doivent rester optionnels : aucun combat ne doit être impossible sans équipement spécifique
+
+### Graphismes — Asset packs (décision : packs modifiés, sprites custom plus tard)
+
+- [ ] **Étape 1 — Tileset grille** — Télécharger Kenney Tiny Dungeon (kenney.nl/assets/tiny-dungeon, CC0, 16×16). Réécrire `GridManager` pour utiliser `TileMapLayer` au lieu des `ColorRect`. Mapper les tiles : herbe→NORMAL, eau→WATER, pierre→ELEVATED, etc.
+- [ ] **Étape 2 — Icônes personnages** — Portraits 64×64 par personnage (game-icons.net pour les icônes pirates, ou dessin Krita). Remplacer le `Label` lettre dans `unit.gd/_build_visuals()` par un `Sprite2D`.
+- [ ] **Étape 3 — UI** — Remplacer les `PanelContainer` gris par une `StyleBoxTexture` cadre parchemin marin (Kenney UI pack).
 
 ---
 

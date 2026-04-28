@@ -70,16 +70,16 @@ func _build_ui() -> void:
 	# ── Victory / Defeat panel (center) ──────────────────────────────────────
 	_result_panel = PanelContainer.new()
 	_result_panel.set_anchors_preset(Control.PRESET_CENTER)
-	_result_panel.offset_left   = -200
-	_result_panel.offset_right  =  200
-	_result_panel.offset_top    = -90
-	_result_panel.offset_bottom =  90
+	_result_panel.offset_left   = -220
+	_result_panel.offset_right  =  220
+	_result_panel.offset_top    = -110
+	_result_panel.offset_bottom =  110
 	_result_panel.hide()
 	add_child(_result_panel)
 
 	var rv := VBoxContainer.new()
 	rv.alignment = BoxContainer.ALIGNMENT_CENTER
-	rv.add_theme_constant_override("separation", 16)
+	rv.add_theme_constant_override("separation", 12)
 	_result_panel.add_child(rv)
 
 	_result_lbl = Label.new()
@@ -89,10 +89,19 @@ func _build_ui() -> void:
 
 	var cont_btn := Button.new()
 	cont_btn.text = "Continuer"
-	cont_btn.custom_minimum_size = Vector2(160, 44)
+	cont_btn.custom_minimum_size = Vector2(180, 44)
 	cont_btn.add_theme_font_size_override("font_size", 16)
 	cont_btn.pressed.connect(func() -> void: GameManager.advance_to_next_battle())
 	rv.add_child(cont_btn)
+
+	var menu_btn := Button.new()
+	menu_btn.text = "Retour au menu"
+	menu_btn.custom_minimum_size = Vector2(180, 44)
+	menu_btn.add_theme_font_size_override("font_size", 16)
+	menu_btn.pressed.connect(func() -> void:
+		get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
+	)
+	rv.add_child(menu_btn)
 
 # ── Public API ────────────────────────────────────────────────────────────────
 
