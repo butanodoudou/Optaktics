@@ -47,7 +47,7 @@ func _build_round() -> void:
 		return a["score"] > b["score"]
 	)
 
-	_queue = scored.map(func(e: Dictionary) -> Unit: return e["unit"])
+	_queue.assign(scored.map(func(e: Dictionary) -> Unit: return e["unit"]))
 
 func peek_order(count: int = 10) -> Array[Unit]:
 	# Non-destructive preview: current queue + simulated future rounds
@@ -72,12 +72,14 @@ func peek_order(count: int = 10) -> Array[Unit]:
 		for u in living:
 			scored.append({ "unit": u, "score": u.effective_agi() + randf_range(0.0, 2.0) })
 		scored.sort_custom(func(a, b) -> bool: return a["score"] > b["score"])
-		remaining = scored.map(func(e) -> Unit: return e["unit"])
+		remaining.assign(scored.map(func(e) -> Unit: return e["unit"]))
 
 	return result
 
 func _living() -> Array[Unit]:
-	return units.filter(func(u: Unit) -> bool: return u.is_alive())
+	var result: Array[Unit] = []
+	result.assign(units.filter(func(u: Unit) -> bool: return u.is_alive()))
+	return result
 
 func reset() -> void:
 	units.clear()

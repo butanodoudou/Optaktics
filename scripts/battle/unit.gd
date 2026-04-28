@@ -82,7 +82,7 @@ func _compute_stats() -> void:
 # ── Visual construction ───────────────────────────────────────────────────────
 
 func _build_visuals() -> void:
-	var border_color := FACTION_COLORS["player"] if is_player else FACTION_COLORS["enemy"]
+	var border_color: Color = FACTION_COLORS["player"] if is_player else FACTION_COLORS["enemy"]
 
 	_border = ColorRect.new()
 	_border.size     = Vector2(TILE_SIZE - 4, TILE_SIZE - 4)
@@ -168,7 +168,7 @@ func set_waiting() -> void:
 # ── Combat ────────────────────────────────────────────────────────────────────
 
 func take_damage(amount: int) -> int:
-	var actual := max(1, amount)
+	var actual: int = max(1, amount)
 	_apply_hp_change(-actual)
 	_flash(Color.RED)
 	# Krieg armor-break check
@@ -178,7 +178,7 @@ func take_damage(amount: int) -> int:
 	return actual
 
 func receive_heal(amount: int) -> int:
-	var gained := min(amount, max_pv - current_pv)
+	var gained: int = min(amount, max_pv - current_pv)
 	_apply_hp_change(gained)
 	_flash(Color.GREEN)
 	return gained

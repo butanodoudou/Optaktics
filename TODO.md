@@ -63,7 +63,7 @@ Progression des Straw Hats entre les arcs.
 - [ ] **Sons / Musique** — Intégrer des pistes libres de droits One Piece-inspired
 
 ### Contenu
-- [ ] **Arc 01 Romance Dawn** — Revoir composition ennemis (actuellement trop simple pour tutoriel)
+- [x] **Arc 01 Romance Dawn** — Rééquilibré : Pirates Rouges niv.20 vs 13 bandits niv.4, décor extérieur, dialogues lore-fidèles
 - [ ] **Arc 07+** — Arabasta, Skypiea, Water 7 (hors scope East Blue mais prévoir la structure)
 - [ ] **Sous-boss** — Ajouter Pearl (Baratie), Django (Syrup Village) comme combats intermédiaires
 
@@ -71,6 +71,14 @@ Progression des Straw Hats entre les arcs.
 - [ ] **Résoudre les conflits de fusion dans les fichiers UI** — `hp_bar.gd`, `battle_ui.gd` contiennent encore des marqueurs de conflit git (à nettoyer)
 - [ ] **Aperçu des dégâts** — Afficher les dégâts estimés avant de confirmer une attaque
 - [ ] **Indicateur de portée des compétences** — Overlay visuel distinct pour portée vs zone d'effet
+
+---
+
+### Graphismes — Asset packs (décision : packs modifiés, sprites custom plus tard)
+
+- [ ] **Étape 1 — Tileset grille** — Télécharger Kenney Tiny Dungeon (kenney.nl/assets/tiny-dungeon, CC0, 16×16). Réécrire `GridManager` pour utiliser `TileMapLayer` au lieu des `ColorRect`. Mapper les tiles : herbe→NORMAL, eau→WATER, pierre→ELEVATED, etc.
+- [ ] **Étape 2 — Icônes personnages** — Portraits 64×64 par personnage (game-icons.net pour les icônes pirates, ou dessin Krita). Remplacer le `Label` lettre dans `unit.gd/_build_visuals()` par un `Sprite2D`.
+- [ ] **Étape 3 — UI** — Remplacer les `PanelContainer` gris par une `StyleBoxTexture` cadre parchemin marin (Kenney UI pack).
 
 ---
 
